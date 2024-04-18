@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjClassTeacherMapper">
+    
+    <resultMap type="OjClassTeacher" id="OjClassTeacherResult">
+        <result property="ojClassId"    column="oj_class_id"    />
+        <result property="ojTeacherId"    column="oj_teacher_id"    />
+    </resultMap>
+
+    <sql id="selectOjClassTeacherVo">
+        select oj_class_id, oj_teacher_id from oj_class_teacher
+    </sql>
+
+    <select id="selectOjClassTeacherList" parameterType="OjClassTeacher" resultMap="OjClassTeacherResult">
+        <include refid="selectOjClassTeacherVo"/>
+        <where>  
+            <if test="ojClassId != null "> and oj_class_id = #{ojClassId}</if>
+            <if test="ojTeacherId != null "> and oj_teacher_id = #{ojTeacherId}</if>
+        </where>
+    </select>
+    
+    <select id="selectOjClassTeacherByOjClassId" parameterType="Long" resultMap="OjClassTeacherResult">
+        <include refid="selectOjClassTeacherVo"/>
+        where oj_class_id = #{ojClassId}
+    </select>
+        
+    <insert id="insertOjClassTeacher" parameterType="OjClassTeacher">
+        insert into oj_class_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ojClassId != null">oj_class_id,</if>
+            <if test="ojTeacherId != null">oj_teacher_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ojClassId != null">#{ojClassId},</if>
+            <if test="ojTeacherId != null">#{ojTeacherId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOjClassTeacher" parameterType="OjClassTeacher">
+        update oj_class_teacher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ojTeacherId != null">oj_teacher_id = #{ojTeacherId},</if>
+        </trim>
+        where oj_class_id = #{ojClassId}
+    </update>
+
+    <delete id="deleteOjClassTeacherByOjClassId" parameterType="Long">
+        delete from oj_class_teacher where oj_class_id = #{ojClassId}
+    </delete>
+
+    <delete id="deleteOjClassTeacherByOjClassIds" parameterType="String">
+        delete from oj_class_teacher where oj_class_id in 
+        <foreach item="ojClassId" collection="array" open="(" separator="," close=")">
+            #{ojClassId}
+        </foreach>
+    </delete>
+</mapper>

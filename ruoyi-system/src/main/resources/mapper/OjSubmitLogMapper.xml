@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjSubmitLogMapper">
+    
+    <resultMap type="OjSubmitLog" id="OjSubmitLogResult">
+        <result property="submitLogId"    column="submit_log_id"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="questionId"    column="question_id"    />
+        <result property="passNum"    column="pass_num"    />
+        <result property="status"    column="status"    />
+        <result property="code"    column="code"    />
+        <result property="remark"    column="remark"    />
+        <result property="runTime"    column="run_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOjSubmitLogVo">
+        select submit_log_id, student_id, question_id, pass_num, status, code, remark, run_time, del_flag, create_by, create_time, update_by, update_time from oj_submit_log
+    </sql>
+
+    <select id="selectOjSubmitLogList" parameterType="OjSubmitLog" resultMap="OjSubmitLogResult">
+        <include refid="selectOjSubmitLogVo"/>
+        <where>  
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+        </where>
+    </select>
+    
+    <select id="selectOjSubmitLogBySubmitLogId" parameterType="Long" resultMap="OjSubmitLogResult">
+        <include refid="selectOjSubmitLogVo"/>
+        where submit_log_id = #{submitLogId}
+    </select>
+        
+    <insert id="insertOjSubmitLog" parameterType="OjSubmitLog" useGeneratedKeys="true" keyProperty="submitLogId">
+        insert into oj_submit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">student_id,</if>
+            <if test="questionId != null">question_id,</if>
+            <if test="passNum != null">pass_num,</if>
+            <if test="status != null">status,</if>
+            <if test="code != null">code,</if>
+            <if test="remark != null">remark,</if>
+            <if test="runTime != null">run_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">#{studentId},</if>
+            <if test="questionId != null">#{questionId},</if>
+            <if test="passNum != null">#{passNum},</if>
+            <if test="status != null">#{status},</if>
+            <if test="code != null">#{code},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="runTime != null">#{runTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOjSubmitLog" parameterType="OjSubmitLog">
+        update oj_submit_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="studentId != null">student_id = #{studentId},</if>
+            <if test="questionId != null">question_id = #{questionId},</if>
+            <if test="passNum != null">pass_num = #{passNum},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="runTime != null">run_time = #{runTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where submit_log_id = #{submitLogId}
+    </update>
+
+    <delete id="deleteOjSubmitLogBySubmitLogId" parameterType="Long">
+        delete from oj_submit_log where submit_log_id = #{submitLogId}
+    </delete>
+
+    <delete id="deleteOjSubmitLogBySubmitLogIds" parameterType="String">
+        delete from oj_submit_log where submit_log_id in 
+        <foreach item="submitLogId" collection="array" open="(" separator="," close=")">
+            #{submitLogId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjClassLessonMapper">
+    
+    <resultMap type="OjClassLesson" id="OjClassLessonResult">
+        <result property="lessonId"    column="lesson_id"    />
+        <result property="classId"    column="class_id"    />
+    </resultMap>
+
+    <sql id="selectOjClassLessonVo">
+        select lesson_id, class_id from oj_class_lesson
+    </sql>
+
+    <select id="selectOjClassLessonList" parameterType="OjClassLesson" resultMap="OjClassLessonResult">
+        <include refid="selectOjClassLessonVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectOjClassLessonByLessonId" parameterType="Long" resultMap="OjClassLessonResult">
+        <include refid="selectOjClassLessonVo"/>
+        where lesson_id = #{lessonId}
+    </select>
+        
+    <insert id="insertOjClassLesson" parameterType="OjClassLesson">
+        insert into oj_class_lesson
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lessonId != null">lesson_id,</if>
+            <if test="classId != null">class_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lessonId != null">#{lessonId},</if>
+            <if test="classId != null">#{classId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOjClassLesson" parameterType="OjClassLesson">
+        update oj_class_lesson
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classId != null">class_id = #{classId},</if>
+        </trim>
+        where lesson_id = #{lessonId}
+    </update>
+
+    <delete id="deleteOjClassLessonByLessonId" parameterType="Long">
+        delete from oj_class_lesson where lesson_id = #{lessonId}
+    </delete>
+
+    <delete id="deleteOjClassLessonByLessonIds" parameterType="String">
+        delete from oj_class_lesson where lesson_id in 
+        <foreach item="lessonId" collection="array" open="(" separator="," close=")">
+            #{lessonId}
+        </foreach>
+    </delete>
+</mapper>

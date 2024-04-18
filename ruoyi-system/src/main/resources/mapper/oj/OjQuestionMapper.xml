@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjQuestionMapper">
+
+    <resultMap type="OjQuestion" id="OjQuestionResult">
+        <result property="questionId" column="question_id"/>
+        <result property="lessonId" column="lesson_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="template" column="template"/>
+        <result property="difficultyLevel" column="difficulty_level"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <association property="lesson" javaType="OjQuestion" resultMap="OjLessonResult"/>
+    </resultMap>
+
+    <resultMap type="OjLesson" id="OjLessonResult">
+        <result property="lessonId" column="lesson_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectOjQuestionVo">
+        select q.question_id,
+               q.lesson_id,
+               q.name,
+               q.description,
+               q.template,
+               q.difficulty_level,
+               q.del_flag,
+               q.create_by,
+               q.create_time,
+               q.update_by,
+               q.update_time,
+               q.remark,
+               l.lesson_id,
+               l.name,
+               l.description,
+               l.del_flag,
+               l.create_by,
+               l.create_time,
+               l.update_by,
+               l.update_time,
+               l.remark
+        from oj_question q
+                 left join oj_lesson l
+                           on q.lesson_id = l.lesson_id
+    </sql>
+
+    <select id="selectOjQuestionList" parameterType="OjQuestion" resultMap="OjQuestionResult">
+        <include refid="selectOjQuestionVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="template != null  and template != ''">and template = #{template}</if>
+            <if test="difficultyLevel != null  and difficultyLevel != ''">and difficulty_level = #{difficultyLevel}</if>
+        </where>
+    </select>
+
+    <select id="selectOjQuestionByQuestionId" parameterType="Long" resultMap="OjQuestionResult">
+        <include refid="selectOjQuestionVo"/>
+        where question_id = #{questionId}
+    </select>
+
+    <insert id="insertOjQuestion" parameterType="OjQuestion" useGeneratedKeys="true" keyProperty="questionId">
+        insert into oj_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="description != null">description,</if>
+            <if test="template != null">template,</if>
+            <if test="difficultyLevel != null">difficulty_level,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="template != null">#{template},</if>
+            <if test="difficultyLevel != null">#{difficultyLevel},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOjQuestion" parameterType="OjQuestion">
+        update oj_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="template != null">template = #{template},</if>
+            <if test="difficultyLevel != null">difficulty_level = #{difficultyLevel},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where question_id = #{questionId}
+    </update>
+
+    <delete id="deleteOjQuestionByQuestionId" parameterType="Long">
+        delete
+        from oj_question
+        where question_id = #{questionId}
+    </delete>
+
+    <delete id="deleteOjQuestionByQuestionIds" parameterType="String">
+        delete from oj_question where question_id in
+        <foreach item="questionId" collection="array" open="(" separator="," close=")">
+            #{questionId}
+        </foreach>
+    </delete>
+</mapper>

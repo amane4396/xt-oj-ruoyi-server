@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjScoreMapper">
+    
+    <resultMap type="OjScore" id="OjScoreResult">
+        <result property="scoreId"    column="score_id"    />
+        <result property="submitLogId"    column="submit_log_id"    />
+        <result property="score"    column="score"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectOjScoreVo">
+        select score_id, submit_log_id, score, del_flag, create_by, create_time, update_by, update_time, remark from oj_score
+    </sql>
+
+    <select id="selectOjScoreList" parameterType="OjScore" resultMap="OjScoreResult">
+        <include refid="selectOjScoreVo"/>
+        <where>  
+            <if test="submitLogId != null "> and submit_log_id = #{submitLogId}</if>
+            <if test="score != null "> and score = #{score}</if>
+        </where>
+    </select>
+    
+    <select id="selectOjScoreByScoreId" parameterType="Long" resultMap="OjScoreResult">
+        <include refid="selectOjScoreVo"/>
+        where score_id = #{scoreId}
+    </select>
+        
+    <insert id="insertOjScore" parameterType="OjScore" useGeneratedKeys="true" keyProperty="scoreId">
+        insert into oj_score
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="submitLogId != null">submit_log_id,</if>
+            <if test="score != null">score,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="submitLogId != null">#{submitLogId},</if>
+            <if test="score != null">#{score},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOjScore" parameterType="OjScore">
+        update oj_score
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="submitLogId != null">submit_log_id = #{submitLogId},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where score_id = #{scoreId}
+    </update>
+
+    <delete id="deleteOjScoreByScoreId" parameterType="Long">
+        delete from oj_score where score_id = #{scoreId}
+    </delete>
+
+    <delete id="deleteOjScoreByScoreIds" parameterType="String">
+        delete from oj_score where score_id in 
+        <foreach item="scoreId" collection="array" open="(" separator="," close=")">
+            #{scoreId}
+        </foreach>
+    </delete>
+</mapper>

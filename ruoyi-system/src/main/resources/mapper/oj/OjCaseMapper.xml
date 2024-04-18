@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjCaseMapper">
+
+    <resultMap type="OjCase" id="OjCaseResult">
+        <result property="caseId" column="case_id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="input" column="input"/>
+        <result property="result" column="result"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <association property="question" javaType="OjQuestion" resultMap="OjQuestionResult"/>
+    </resultMap>
+
+    <resultMap type="OjQuestion" id="OjQuestionResult">
+        <result property="questionId" column="question_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="template" column="template"/>
+        <result property="difficultyLevel" column="difficulty_level"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectOjCaseVo">
+        select c.case_id, c.question_id, c.input, c.result, c.del_flag, c.create_by, c.create_time, c.update_by, c.update_time, c.remark,
+            q.question_id, q.name, q.description, q.template, q.difficulty_level, q.del_flag, q.create_by, q.create_time, q.update_by, q.update_time, q.remark
+        from oj_case c left join oj_question q on c.question_id = q.question_id
+    </sql>
+
+    <select id="selectOjCaseList" parameterType="OjCase" resultMap="OjCaseResult">
+        <include refid="selectOjCaseVo"/>
+        <where>
+            <if test="questionId != null ">and question_id = #{questionId}</if>
+            <if test="input != null  and input != ''">and input = #{input}</if>
+            <if test="result != null  and result != ''">and result = #{result}</if>
+        </where>
+    </select>
+
+    <select id="selectOjCaseByCaseId" parameterType="Long" resultMap="OjCaseResult">
+        <include refid="selectOjCaseVo"/>
+        where case_id = #{caseId}
+    </select>
+
+    <insert id="insertOjCase" parameterType="OjCase" useGeneratedKeys="true" keyProperty="caseId">
+        insert into oj_case
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionId != null">question_id,</if>
+            <if test="input != null">input,</if>
+            <if test="result != null">result,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionId != null">#{questionId},</if>
+            <if test="input != null">#{input},</if>
+            <if test="result != null">#{result},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOjCase" parameterType="OjCase">
+        update oj_case
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionId != null">question_id = #{questionId},</if>
+            <if test="input != null">input = #{input},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where case_id = #{caseId}
+    </update>
+
+    <delete id="deleteOjCaseByCaseId" parameterType="Long">
+        delete
+        from oj_case
+        where case_id = #{caseId}
+    </delete>
+
+    <delete id="deleteOjCaseByCaseIds" parameterType="String">
+        delete from oj_case where case_id in
+        <foreach item="caseId" collection="array" open="(" separator="," close=")">
+            #{caseId}
+        </foreach>
+    </delete>
+</mapper>
