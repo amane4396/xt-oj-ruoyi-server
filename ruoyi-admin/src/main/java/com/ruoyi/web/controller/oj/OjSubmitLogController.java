@@ -1,8 +1,16 @@
 package com.ruoyi.web.controller.oj;
 
 import java.util.List;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import ch.qos.logback.core.util.StringCollectionUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.dto.RunCodeDto;
+import io.swagger.annotations.ApiOperation;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +41,33 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class OjSubmitLogController extends BaseController {
     @Autowired
     private IOjSubmitLogService ojSubmitLogService;
+
+    @Resource
+    private ObjectMapper objectMapper;
+
+    @Resource
+    private IOjSubmitLogService iOjSubmitLogService;
+
+
+    @PostMapping("/runCode")
+    @ApiOperation("测试代码")
+    public AjaxResult runCode(@RequestBody String requestBody) throws Exception{
+        RunCodeDto dto = objectMapper.readValue(requestBody, RunCodeDto.class);
+        return iOjSubmitLogService.runCode(dto.getCode());
+    }
+    /**
+     * 提交代码
+     *
+     * @param requestBody RequestBody
+     * @return AjaxResult AjaxResult
+     * @throws Exception Exception
+     */
+    @PostMapping("/submit")
+    @ApiOperation("测试提交")
+    public AjaxResult test(@RequestBody OjSubmitLog log) throws Exception{
+//        OjSubmitLog log = objectMapper.readValue(requestBody, OjSubmitLog.class);
+        return iOjSubmitLogService.submit(log);
+    }
 
     /**
      * 查询提交样例记录列表

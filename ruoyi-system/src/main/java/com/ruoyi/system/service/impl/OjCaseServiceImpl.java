@@ -11,6 +11,8 @@ import com.ruoyi.system.mapper.OjCaseMapper;
 import com.ruoyi.system.domain.OjCase;
 import com.ruoyi.system.service.IOjCaseService;
 
+import javax.annotation.Resource;
+
 /**
  * 题目样例Service业务层处理
  *
@@ -21,6 +23,7 @@ import com.ruoyi.system.service.IOjCaseService;
 public class OjCaseServiceImpl extends ServiceImpl<OjCaseMapper, OjCase> implements IOjCaseService {
     @Autowired
     private OjCaseMapper ojCaseMapper;
+
 
     /**
      * 查询题目样例

@@ -47,6 +47,9 @@ user:
 
 # Spring配置
 spring:
+  jackson:
+    parser:
+      allow-unquoted-control-chars: true
   # 资源信息
   messages:
     # 国际化资源文件路径
@@ -143,3 +146,4 @@ wx:
   minApp:
     appId: wxa3ed13bdf95da645
     appSecret: 785ae9fb55751ef1ce3f391e002ec411
+

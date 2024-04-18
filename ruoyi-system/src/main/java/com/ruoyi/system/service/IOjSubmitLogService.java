@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.OjSubmitLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -58,4 +60,20 @@ public interface IOjSubmitLogService extends IService<OjSubmitLog> {
      * @return 结果
      */
     public int deleteOjSubmitLogBySubmitLogId(Long submitLogId);
+
+    /**
+     * 创建记录
+     *
+     * @param log Log
+     * @return AjaxResult
+     */
+    AjaxResult submit(OjSubmitLog log) throws Exception;
+
+    /**
+     * 测试代码
+     *
+     * @param code String
+     * @return  AjaxResult
+     */
+    AjaxResult runCode(String code);
 }
