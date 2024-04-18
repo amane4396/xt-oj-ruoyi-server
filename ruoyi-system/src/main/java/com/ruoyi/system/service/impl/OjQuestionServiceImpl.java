@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.List;
@@ -89,4 +90,11 @@ public class OjQuestionServiceImpl extends ServiceImpl<OjQuestionMapper, OjQuest
     public int deleteOjQuestionByQuestionId(Long questionId) {
         return ojQuestionMapper.deleteOjQuestionByQuestionId(questionId);
     }
+
+    @Override
+    public List<OjQuestion> selectOjQuestionListByLessonId(Long lessonId) {
+        return list(new LambdaQueryWrapper<OjQuestion>().eq(OjQuestion::getLessonId, lessonId));
+    }
+
+
 }

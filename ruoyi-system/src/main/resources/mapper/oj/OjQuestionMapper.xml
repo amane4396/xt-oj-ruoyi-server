@@ -6,8 +6,8 @@
 
     <resultMap type="OjQuestion" id="OjQuestionResult">
         <result property="questionId" column="question_id"/>
-        <result property="lessonId" column="lesson_id"/>
-        <result property="name" column="name"/>
+        <result property="lessonId" column="question_lesson_id"/>
+        <result property="name" column="question_name"/>
         <result property="description" column="description"/>
         <result property="template" column="template"/>
         <result property="difficultyLevel" column="difficulty_level"/>
@@ -17,25 +17,25 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
-        <association property="lesson" javaType="OjQuestion" resultMap="OjLessonResult"/>
+        <association property="lesson" javaType="OjLesson" resultMap="OjLessonResult"/>
     </resultMap>
 
     <resultMap type="OjLesson" id="OjLessonResult">
-        <result property="lessonId" column="lesson_id"/>
-        <result property="name" column="name"/>
-        <result property="description" column="description"/>
-        <result property="delFlag" column="del_flag"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
+        <result property="lessonId" column="lesson_lesson_id"/>
+        <result property="name" column="lesson_name"/>
+        <result property="description" column="lesson_description"/>
+        <result property="delFlag" column="lesson_del_flag"/>
+        <result property="createBy" column="lesson_create_by"/>
+        <result property="createTime" column="lesson_create_time"/>
+        <result property="updateBy" column="lesson_update_by"/>
+        <result property="updateTime" column="lesson_update_time"/>
+        <result property="remark" column="lesson_remark"/>
     </resultMap>
 
     <sql id="selectOjQuestionVo">
         select q.question_id,
-               q.lesson_id,
-               q.name,
+               q.lesson_id as question_lesson_id,
+               q.name as question_name,
                q.description,
                q.template,
                q.difficulty_level,
@@ -45,15 +45,15 @@
                q.update_by,
                q.update_time,
                q.remark,
-               l.lesson_id,
-               l.name,
-               l.description,
-               l.del_flag,
-               l.create_by,
-               l.create_time,
-               l.update_by,
-               l.update_time,
-               l.remark
+               l.lesson_id as lesson_lesson_id,
+               l.name as lesson_name,
+               l.description as lesson_description,
+               l.del_flag as lesson_del_flag,
+               l.create_by as lesson_create_by,
+               l.create_time as lesson_create_time,
+               l.update_by as lesson_update_by,
+               l.update_time as lesson_update_time,
+               l.remark as lesson_remark
         from oj_question q
                  left join oj_lesson l
                            on q.lesson_id = l.lesson_id

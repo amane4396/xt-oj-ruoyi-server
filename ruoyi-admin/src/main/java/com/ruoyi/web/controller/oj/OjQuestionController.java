@@ -87,6 +87,12 @@ public class OjQuestionController extends BaseController {
         return toAjax(ojQuestionService.insertOjQuestion(ojQuestion));
     }
 
+    // 根据课程id查询所有的题目
+    @GetMapping("/selectOjQuestionListByLessonId/{lessonId}")
+    public List<OjQuestion> listAllQuestionByCourseId(@PathVariable Long lessonId) {
+        return ojQuestionService.selectOjQuestionListByLessonId(lessonId);
+    }
+
     /**
      * 修改题目管理
      */

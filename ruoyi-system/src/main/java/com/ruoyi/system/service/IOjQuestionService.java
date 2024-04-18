@@ -58,4 +58,6 @@ public interface IOjQuestionService extends IService<OjQuestion> {
      * @return 结果
      */
     public int deleteOjQuestionByQuestionId(Long questionId);
+
+    List<OjQuestion> selectOjQuestionListByLessonId(Long lessonId);
 }
