@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OjHomeworkMapper">
+    
+    <resultMap type="OjHomework" id="OjHomeworkResult">
+        <result property="homeworkId"    column="homework_id"    />
+        <result property="name"    column="name"    />
+        <result property="remark"    column="remark"    />
+        <result property="lessonId"    column="lesson_id"    />
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="questionIds"    column="question_ids"    />
+        <result property="status"    column="status"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOjHomeworkVo">
+        select homework_id, name, remark, lesson_id, teacher_id, question_ids, status, start_time, end_time, del_flag, create_by, create_time, update_by, update_time from oj_homework
+    </sql>
+
+    <select id="selectOjHomeworkList" parameterType="OjHomework" resultMap="OjHomeworkResult">
+        <include refid="selectOjHomeworkVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="lessonId != null "> and lesson_id = #{lessonId}</if>
+            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
+            <if test="questionIds != null  and questionIds != ''"> and question_ids = #{questionIds}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectOjHomeworkByHomeworkId" parameterType="Long" resultMap="OjHomeworkResult">
+        <include refid="selectOjHomeworkVo"/>
+        where homework_id = #{homeworkId}
+    </select>
+        
+    <insert id="insertOjHomework" parameterType="OjHomework" useGeneratedKeys="true" keyProperty="homeworkId">
+        insert into oj_homework
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="remark != null">remark,</if>
+            <if test="lessonId != null">lesson_id,</if>
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="questionIds != null">question_ids,</if>
+            <if test="status != null">status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="lessonId != null">#{lessonId},</if>
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="questionIds != null">#{questionIds},</if>
+            <if test="status != null">#{status},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOjHomework" parameterType="OjHomework">
+        update oj_homework
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="lessonId != null">lesson_id = #{lessonId},</if>
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="questionIds != null">question_ids = #{questionIds},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where homework_id = #{homeworkId}
+    </update>
+
+    <delete id="deleteOjHomeworkByHomeworkId" parameterType="Long">
+        delete from oj_homework where homework_id = #{homeworkId}
+    </delete>
+
+    <delete id="deleteOjHomeworkByHomeworkIds" parameterType="String">
+        delete from oj_homework where homework_id in 
+        <foreach item="homeworkId" collection="array" open="(" separator="," close=")">
+            #{homeworkId}
+        </foreach>
+    </delete>
+</mapper>
