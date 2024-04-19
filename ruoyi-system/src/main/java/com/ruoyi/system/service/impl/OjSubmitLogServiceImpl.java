@@ -143,6 +143,7 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
 
         int passed = 0;
         long begin = System.currentTimeMillis();
+        solution.setAccessible(true);
         for(OjCase example : examples){
             String str =  solution.invoke(cls, example.getInput()).toString();
             if(str.equals(example.getResult())){
