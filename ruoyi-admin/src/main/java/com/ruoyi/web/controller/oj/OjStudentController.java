@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.system.domain.OjClass;
 import com.ruoyi.system.domain.OjClassLesson;
 import com.ruoyi.system.domain.OjClassStudent;
@@ -70,7 +71,11 @@ public class OjStudentController extends BaseController
             OjClass ojClass = iOjClassService.getById(a.getClassId());
             Map<String, List<OjStudent>> value = new HashMap<>();
             iOjClassStudentService.list(new LambdaQueryWrapper<OjClassStudent>().eq(OjClassStudent::getOjClassId, a.getClassId())).forEach(ojClassStudent -> {
-                students.add(iOjStudentService.getById(ojClassStudent.getOjStudentId()));
+                OjStudent student = iOjStudentService.getById(ojClassStudent.getOjStudentId());
+                Long userId = student.getUserId();
+                SysUser sysUser = sysUserService.selectUserById(userId);
+                student.setSysUser(sysUser);
+                students.add(student);
             });
             if (students.size() != 0){
                 value.put(ojClass.getClassName(), students);
