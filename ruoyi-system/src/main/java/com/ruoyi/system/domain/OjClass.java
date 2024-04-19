@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author ruoyi
  * @date 2024-04-18
  */
+@Data
 @TableName(resultMap = "com.ruoyi.system.mapper.OjClassMapper.OjClassResult")
 public class OjClass extends BaseEntity {
     private static final long serialVersionUID = 1L;
