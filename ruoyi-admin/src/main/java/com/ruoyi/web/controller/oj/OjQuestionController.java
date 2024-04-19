@@ -1,10 +1,15 @@
 package com.ruoyi.web.controller.oj;
 
+import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.system.domain.OjHomework;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +41,23 @@ public class OjQuestionController extends BaseController {
     @Autowired
     private IOjQuestionService ojQuestionService;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
+    /**
+     * 根据作业id查题目
+     */
+    @GetMapping("/getList")
+    public TableDataInfo listByHomeWorkId(@RequestBody OjHomework homework){
+        String values = homework.getQuestionIds();
+        String[] ids = values.split(",");
+        List<OjQuestion> list = new ArrayList<>();
+        for(String str : ids){
+            OjQuestion question =  ojQuestionService.getById(Long.valueOf(str));
+            list.add(question);
+        }
+        return getDataTable(list);
+    }
 
     /**
      * 查询题目管理列表
