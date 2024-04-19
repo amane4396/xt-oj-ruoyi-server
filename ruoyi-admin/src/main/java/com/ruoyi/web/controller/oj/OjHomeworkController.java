@@ -46,7 +46,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 查询作业管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjHomework ojHomework) {
         startPage();
@@ -57,7 +56,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 导出作业管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:export')")
     @Log(title = "作业管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjHomework ojHomework) {
@@ -69,7 +67,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 获取作业管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:query')")
     @GetMapping(value = "/{homeworkId}")
     public AjaxResult getInfo(@PathVariable("homeworkId") Long homeworkId) {
         return success(ojHomeworkService.selectOjHomeworkByHomeworkId(homeworkId));
@@ -78,7 +75,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 新增作业管理
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:add')")
     @Log(title = "作业管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjHomework ojHomework) {
@@ -88,7 +84,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 修改作业管理
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:edit')")
     @Log(title = "作业管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjHomework ojHomework) {
@@ -98,7 +93,6 @@ public class OjHomeworkController extends BaseController {
     /**
      * 删除作业管理
      */
-    @PreAuthorize("@ss.hasPermi('system:homework:remove')")
     @Log(title = "作业管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{homeworkIds}")
     public AjaxResult remove(@PathVariable Long[] homeworkIds) {

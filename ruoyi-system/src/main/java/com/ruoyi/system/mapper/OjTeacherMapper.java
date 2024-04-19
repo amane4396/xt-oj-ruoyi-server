@@ -1,19 +1,20 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.system.domain.OjTeacher;
 
 /**
  * teacherMapper接口
- * 
+ *
  * @author ruoyi
  * @date 2024-04-18
  */
-public interface OjTeacherMapper 
-{
+public interface OjTeacherMapper extends BaseMapper<OjTeacher> {
     /**
      * 查询teacher
-     * 
+     *
      * @param teacherId teacher主键
      * @return teacher
      */
@@ -21,7 +22,7 @@ public interface OjTeacherMapper
 
     /**
      * 查询teacher列表
-     * 
+     *
      * @param ojTeacher teacher
      * @return teacher集合
      */
@@ -29,7 +30,7 @@ public interface OjTeacherMapper
 
     /**
      * 新增teacher
-     * 
+     *
      * @param ojTeacher teacher
      * @return 结果
      */
@@ -37,7 +38,7 @@ public interface OjTeacherMapper
 
     /**
      * 修改teacher
-     * 
+     *
      * @param ojTeacher teacher
      * @return 结果
      */
@@ -45,7 +46,7 @@ public interface OjTeacherMapper
 
     /**
      * 删除teacher
-     * 
+     *
      * @param teacherId teacher主键
      * @return 结果
      */
@@ -53,7 +54,7 @@ public interface OjTeacherMapper
 
     /**
      * 批量删除teacher
-     * 
+     *
      * @param teacherIds 需要删除的数据主键集合
      * @return 结果
      */

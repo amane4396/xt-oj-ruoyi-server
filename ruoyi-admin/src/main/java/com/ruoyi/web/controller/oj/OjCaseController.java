@@ -37,7 +37,6 @@ public class OjCaseController extends BaseController {
     /**
      * 查询题目样例列表
      */
-    @PreAuthorize("@ss.hasPermi('system:case:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjCase ojCase) {
         startPage();
@@ -48,7 +47,6 @@ public class OjCaseController extends BaseController {
     /**
      * 导出题目样例列表
      */
-    @PreAuthorize("@ss.hasPermi('system:case:export')")
     @Log(title = "题目样例", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjCase ojCase) {
@@ -60,7 +58,6 @@ public class OjCaseController extends BaseController {
     /**
      * 获取题目样例详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:case:query')")
     @GetMapping(value = "/{caseId}")
     public AjaxResult getInfo(@PathVariable("caseId") Long caseId) {
         return success(ojCaseService.selectOjCaseByCaseId(caseId));
@@ -69,7 +66,6 @@ public class OjCaseController extends BaseController {
     /**
      * 新增题目样例
      */
-    @PreAuthorize("@ss.hasPermi('system:case:add')")
     @Log(title = "题目样例", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjCase ojCase) {
@@ -79,7 +75,6 @@ public class OjCaseController extends BaseController {
     /**
      * 修改题目样例
      */
-    @PreAuthorize("@ss.hasPermi('system:case:edit')")
     @Log(title = "题目样例", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjCase ojCase) {
@@ -89,7 +84,6 @@ public class OjCaseController extends BaseController {
     /**
      * 删除题目样例
      */
-    @PreAuthorize("@ss.hasPermi('system:case:remove')")
     @Log(title = "题目样例", businessType = BusinessType.DELETE)
     @DeleteMapping("/{caseIds}")
     public AjaxResult remove(@PathVariable Long[] caseIds) {

@@ -47,7 +47,6 @@ public class OjStudentController extends BaseController
     /**
      * 查询学生管理列表
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjStudent ojStudent)
     {
@@ -59,7 +58,6 @@ public class OjStudentController extends BaseController
     /**
      * 导出学生管理列表
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:export')")
     @Log(title = "学生管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjStudent ojStudent)
@@ -72,7 +70,6 @@ public class OjStudentController extends BaseController
     /**
      * 获取学生管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:query')")
     @GetMapping(value = "/{studentId}")
     public AjaxResult getInfo(@PathVariable("studentId") Long studentId)
     {
@@ -82,7 +79,6 @@ public class OjStudentController extends BaseController
     /**
      * 新增学生管理
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:add')")
     @Log(title = "学生管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjStudent ojStudent)
@@ -93,7 +89,6 @@ public class OjStudentController extends BaseController
     /**
      * 修改学生管理
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:edit')")
     @Log(title = "学生管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjStudent ojStudent)
@@ -104,7 +99,6 @@ public class OjStudentController extends BaseController
     /**
      * 删除学生管理
      */
-    @PreAuthorize("@ss.hasPermi('oj:student:remove')")
     @Log(title = "学生管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{studentIds}")
     public AjaxResult remove(@PathVariable Long[] studentIds)

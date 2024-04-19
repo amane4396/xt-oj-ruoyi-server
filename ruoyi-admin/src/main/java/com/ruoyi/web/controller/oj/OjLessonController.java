@@ -1,13 +1,20 @@
 package com.ruoyi.web.controller.oj;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.ruoyi.system.domain.OjClass;
-import com.ruoyi.system.domain.OjClassLesson;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.OjTeacherMapper;
 import com.ruoyi.system.service.IOjClassLessonService;
+import com.ruoyi.system.service.IOjClassTeacherService;
+import com.ruoyi.system.service.IOjTeacherService;
 import io.swagger.models.auth.In;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +30,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.OjLesson;
 import com.ruoyi.system.service.IOjLessonService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -44,11 +50,32 @@ public class OjLessonController extends BaseController {
     @Autowired
     private IOjClassLessonService classLessonService;
 
+    @Autowired
+    private IOjClassTeacherService classTeacherService;
+
+
+    @Autowired
+    private IOjTeacherService teacherService;
+
+
+    @GetMapping("/getLessonByTeacherId")
+    public List<OjLesson> getLessonByTeacherId() {
+        Long userId = SecurityUtils.getUserId();
+        OjTeacher teacher = teacherService.getOne(new LambdaQueryWrapper<OjTeacher>().eq(OjTeacher::getUserId, userId));
+        List<OjClassTeacher> ojClassTeacherList = classTeacherService.list(new LambdaQueryWrapper<OjClassTeacher>().eq(OjClassTeacher::getOjTeacherId, teacher.getTeacherId()));
+        List<Long> lessonIds = new ArrayList<>();
+        for (OjClassTeacher ojClassTeacher : ojClassTeacherList) {
+            classLessonService.list(new LambdaQueryWrapper<OjClassLesson>().eq(OjClassLesson::getClassId, ojClassTeacher.getOjClassId())).forEach(
+                    ojClassLesson -> lessonIds.add(ojClassLesson.getLessonId())
+            );
+        }
+        return CollectionUtil.distinct(ojLessonService.listByIds(lessonIds));
+    }
+
 
     /**
      * 查询课程管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjLesson ojLesson) {
         startPage();
@@ -64,7 +91,6 @@ public class OjLessonController extends BaseController {
     /**
      * 导出课程管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:export')")
     @Log(title = "课程管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjLesson ojLesson) {
@@ -76,7 +102,6 @@ public class OjLessonController extends BaseController {
     /**
      * 获取课程管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:query')")
     @GetMapping(value = "/{lessonId}")
     public AjaxResult getInfo(@PathVariable("lessonId") Long lessonId) {
         return success(ojLessonService.selectOjLessonByLessonId(lessonId));
@@ -85,7 +110,6 @@ public class OjLessonController extends BaseController {
     /**
      * 新增课程管理
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:add')")
     @Log(title = "课程管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody String requestBody) {
@@ -109,7 +133,6 @@ public class OjLessonController extends BaseController {
     /**
      * 修改课程管理
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:edit')")
     @Log(title = "课程管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjLesson ojLesson) {
@@ -119,7 +142,6 @@ public class OjLessonController extends BaseController {
     /**
      * 删除课程管理
      */
-    @PreAuthorize("@ss.hasPermi('system:lesson:remove')")
     @Log(title = "课程管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{lessonIds}")
     public AjaxResult remove(@PathVariable Long[] lessonIds) {

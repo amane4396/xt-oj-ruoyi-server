@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -27,6 +28,8 @@ public class OjTeacher extends BaseEntity
     @Excel(name = "教工号")
     private String no;
 
+
+    @TableField(exist = false)
     private SysUser sysUser;
 
     /** 删除标志（0代表存在 2代表删除） */

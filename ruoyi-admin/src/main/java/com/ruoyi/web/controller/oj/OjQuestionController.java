@@ -62,7 +62,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 查询题目管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:question:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjQuestion ojQuestion) {
         startPage();
@@ -81,7 +80,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 导出题目管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:question:export')")
     @Log(title = "题目管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjQuestion ojQuestion) {
@@ -93,7 +91,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 获取题目管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:question:query')")
     @GetMapping(value = "/{questionId}")
     public AjaxResult getInfo(@PathVariable("questionId") Long questionId) {
         return success(ojQuestionService.selectOjQuestionByQuestionId(questionId));
@@ -102,7 +99,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 新增题目管理
      */
-    @PreAuthorize("@ss.hasPermi('system:question:add')")
     @Log(title = "题目管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjQuestion ojQuestion) {
@@ -118,7 +114,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 修改题目管理
      */
-    @PreAuthorize("@ss.hasPermi('system:question:edit')")
     @Log(title = "题目管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjQuestion ojQuestion) {
@@ -128,7 +123,6 @@ public class OjQuestionController extends BaseController {
     /**
      * 删除题目管理
      */
-    @PreAuthorize("@ss.hasPermi('system:question:remove')")
     @Log(title = "题目管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{questionIds}")
     public AjaxResult remove(@PathVariable Long[] questionIds) {

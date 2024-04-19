@@ -37,7 +37,6 @@ public class OjTeacherController extends BaseController
     /**
      * 查询teacher列表
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjTeacher ojTeacher)
     {
@@ -49,7 +48,6 @@ public class OjTeacherController extends BaseController
     /**
      * 导出teacher列表
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:export')")
     @Log(title = "teacher", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjTeacher ojTeacher)
@@ -62,7 +60,6 @@ public class OjTeacherController extends BaseController
     /**
      * 获取teacher详细信息
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:query')")
     @GetMapping(value = "/{teacherId}")
     public AjaxResult getInfo(@PathVariable("teacherId") Long teacherId)
     {
@@ -72,7 +69,6 @@ public class OjTeacherController extends BaseController
     /**
      * 新增teacher
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:add')")
     @Log(title = "teacher", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjTeacher ojTeacher)
@@ -83,7 +79,6 @@ public class OjTeacherController extends BaseController
     /**
      * 修改teacher
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:edit')")
     @Log(title = "teacher", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjTeacher ojTeacher)
@@ -94,7 +89,6 @@ public class OjTeacherController extends BaseController
     /**
      * 删除teacher
      */
-    @PreAuthorize("@ss.hasPermi('oj:teacher:remove')")
     @Log(title = "teacher", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{teacherIds}")
     public AjaxResult remove(@PathVariable Long[] teacherIds)

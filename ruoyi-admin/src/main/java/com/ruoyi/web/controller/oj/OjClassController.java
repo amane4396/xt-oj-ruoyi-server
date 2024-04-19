@@ -37,7 +37,6 @@ public class OjClassController extends BaseController {
     /**
      * 查询班级管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:class:list')")
     @GetMapping("/list")
     public TableDataInfo list(OjClass ojClass) {
         startPage();
@@ -53,7 +52,6 @@ public class OjClassController extends BaseController {
     /**
      * 导出班级管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:class:export')")
     @Log(title = "班级管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, OjClass ojClass) {
@@ -65,7 +63,6 @@ public class OjClassController extends BaseController {
     /**
      * 获取班级管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:class:query')")
     @GetMapping(value = "/{classId}")
     public AjaxResult getInfo(@PathVariable("classId") Long classId) {
         return success(ojClassService.selectOjClassByClassId(classId));
@@ -74,7 +71,6 @@ public class OjClassController extends BaseController {
     /**
      * 新增班级管理
      */
-    @PreAuthorize("@ss.hasPermi('system:class:add')")
     @Log(title = "班级管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody OjClass ojClass) {
@@ -84,7 +80,6 @@ public class OjClassController extends BaseController {
     /**
      * 修改班级管理
      */
-    @PreAuthorize("@ss.hasPermi('system:class:edit')")
     @Log(title = "班级管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody OjClass ojClass) {
@@ -94,7 +89,6 @@ public class OjClassController extends BaseController {
     /**
      * 删除班级管理
      */
-    @PreAuthorize("@ss.hasPermi('system:class:remove')")
     @Log(title = "班级管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{classIds}")
     public AjaxResult remove(@PathVariable Long[] classIds) {

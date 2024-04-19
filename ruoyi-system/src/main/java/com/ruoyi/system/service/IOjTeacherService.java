@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.OjTeacher;
 
 /**
@@ -9,7 +11,7 @@ import com.ruoyi.system.domain.OjTeacher;
  * @author ruoyi
  * @date 2024-04-18
  */
-public interface IOjTeacherService 
+public interface IOjTeacherService extends IService<OjTeacher>
 {
     /**
      * 查询teacher
