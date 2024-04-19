@@ -140,7 +140,6 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
 
         Method solution = cls.getMethod("solution", String.class);
 
-
         int passed = 0;
         long begin = System.currentTimeMillis();
         solution.setAccessible(true);
