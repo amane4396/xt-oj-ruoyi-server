@@ -1,12 +1,15 @@
 package com.ruoyi.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.OjTeacher;
 import com.ruoyi.system.domain.vo.AddHomeworkDto;
+import com.ruoyi.system.service.IOjTeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.OjHomeworkMapper;
@@ -25,6 +28,9 @@ import javax.annotation.Resource;
 public class OjHomeworkServiceImpl extends ServiceImpl<OjHomeworkMapper, OjHomework> implements IOjHomeworkService {
     @Resource
     private OjHomeworkMapper ojHomeworkMapper;
+
+    @Resource
+    private IOjTeacherService teacherService;
 
 
     /**
@@ -57,6 +63,10 @@ public class OjHomeworkServiceImpl extends ServiceImpl<OjHomeworkMapper, OjHomew
      */
     @Override
     public int insertOjHomework(OjHomework ojHomework) {
+        OjTeacher teacher = teacherService.getOne(new LambdaQueryWrapper<OjTeacher>().eq(OjTeacher::getUserId, SecurityUtils.getUserId()));
+        if (teacher != null) {
+            ojHomework.setTeacherId(SecurityUtils.getUserId());
+        }
         ojHomework.setCreateTime(DateUtils.getNowDate());
         ojHomework.setStatus(0L);
         ojHomework.setCreateBy(SecurityUtils.getUsername());

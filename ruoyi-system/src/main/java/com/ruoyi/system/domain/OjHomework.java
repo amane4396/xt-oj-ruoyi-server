@@ -1,7 +1,9 @@
 package com.ruoyi.system.domain;
 
 import java.util.Date;
+import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -50,6 +52,17 @@ public class OjHomework extends BaseEntity {
      */
     @Excel(name = "题目id列表，逗号分割")
     private String questionIds;
+
+    public List<OjQuestion> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<OjQuestion> questionList) {
+        this.questionList = questionList;
+    }
+
+    @TableField(exist = false)
+    private List<OjQuestion> questionList;
 
     /**
      * 状态标志（开始，进行中，截止）
@@ -157,6 +170,7 @@ public class OjHomework extends BaseEntity {
                 .append("lessonId", getLessonId())
                 .append("teacherId", getTeacherId())
                 .append("questionIds", getQuestionIds())
+                .append("questionList", getQuestionList())
                 .append("status", getStatus())
                 .append("startTime", getStartTime())
                 .append("endTime", getEndTime())

@@ -1,11 +1,21 @@
 package com.ruoyi.web.controller.oj;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.system.domain.OjQuestion;
+import com.ruoyi.system.domain.OjTeacher;
 import com.ruoyi.system.domain.vo.AddHomeworkDto;
+import com.ruoyi.system.domain.vo.HomeWorkVo;
+import com.ruoyi.system.service.IOjQuestionService;
+import com.ruoyi.system.service.IOjTeacherService;
 import org.apache.poi.xddf.usermodel.text.TabAlignment;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +47,12 @@ public class OjHomeworkController extends BaseController {
     @Autowired
     private IOjHomeworkService ojHomeworkService;
 
+    @Autowired
+    private IOjTeacherService ojTeacherService;
+
+    @Autowired
+    private IOjQuestionService ojQuestionService;
+
 //    @PostMapping("/add")
 //    public AjaxResult addHomework(@RequestBody AddHomeworkDto dto){
 //        ojHomeworkService.addHomework(dto);
@@ -52,6 +68,20 @@ public class OjHomeworkController extends BaseController {
         List<OjHomework> list = ojHomeworkService.selectOjHomeworkList(ojHomework);
         return getDataTable(list);
     }
+
+    @GetMapping("/listByLessonId/{lessonId}")
+    public AjaxResult listByLessonId(@PathVariable Long lessonId) {
+        List<OjHomework> list = ojHomeworkService.list(new LambdaQueryWrapper<OjHomework>().eq(OjHomework::getLessonId, lessonId));
+        for (OjHomework ojHomework : list) {
+            if (!ojHomework.getQuestionIds().isEmpty()) {
+                String[] questionList = ojHomework.getQuestionIds().split(",");
+                List<OjQuestion> ojQuestions = ojQuestionService.listByIds(Arrays.asList(questionList));
+                ojHomework.setQuestionList(ojQuestions);
+            }
+        }
+        return AjaxResult.success(list);
+    }
+
 
     /**
      * 导出作业管理列表
