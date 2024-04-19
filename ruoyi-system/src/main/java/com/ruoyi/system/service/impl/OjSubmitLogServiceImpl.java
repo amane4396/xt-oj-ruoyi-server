@@ -13,6 +13,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.Task;
 import com.ruoyi.system.domain.OjCase;
+import com.ruoyi.system.domain.vo.LogReturnVo;
 import com.ruoyi.system.mapper.OjCaseMapper;
 import com.ruoyi.system.service.IOjCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,25 +115,32 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
         Question question = new Question();
         question.setCode(log.getCode());
         question.setStdin("");
+        LogReturnVo logReturnVo = new LogReturnVo();
+        LambdaQueryWrapper<OjCase> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(OjCase::getQuestionId, log.getQuestionId());
+        List<OjCase> examples = iOjCaseService.list(lambdaQueryWrapper);
         // 编译代码
         CustomClassLoader customClassLoader = new CustomClassLoader();
+        int count = examples.size();
         Task task = new Task();
         try {
             task.compile(question);
         } catch (Exception e) {
             log.setRemark(e.getMessage());
+            logReturnVo.setRemark("编译失败：\n" + e.getMessage());
+            logReturnVo.setRunTime("");
+            logReturnVo.setRunCondition("0/" + count);
             log.setStatus("2");
             log.setPassNum(0L);
             ojSubmitLogMapper.insert(log);
-            return AjaxResult.error("编译失败:\n" + log.getRemark());
+            return AjaxResult.success(logReturnVo);
         }
         // 加载类获取方法反射
         Class<?> cls = customClassLoader.loadClassFromFile("./tmp/Solution.class");
-        LambdaQueryWrapper<OjCase> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(OjCase::getQuestionId, log.getQuestionId());
+
         Method solution = cls.getMethod("solution", String.class);
-        List<OjCase> examples = iOjCaseService.list(lambdaQueryWrapper);
-        int count = examples.size();
+
+
         int passed = 0;
         long begin = System.currentTimeMillis();
         for(OjCase example : examples){
@@ -151,7 +159,9 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
             log.setPassNum((long)passed);
             log.setRunTime((end - begin) + "ms");
             log.setStudentId(SecurityUtils.getUserId());
-
+            logReturnVo.setRunCondition(count + "/" + count + "ms");
+            logReturnVo.setRemark("通过");
+            logReturnVo.setRunTime(String.valueOf(passed));
         }else{
             log.setCode("2");
             log.setRemark("FAILED");
@@ -159,11 +169,14 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
             log.setRunTime((end - begin) + "ms");
             log.setStudentId(SecurityUtils.getUserId());
             log.setRemark("样例未全部通过");
+            logReturnVo.setRunCondition(passed + "/" + count + "ms");
+            logReturnVo.setRemark("样例未全部通过");
+            logReturnVo.setRunTime(String.valueOf(passed));
         }
 
         log.setRunTime(String.valueOf(end - begin));
         iOjSubmitLogService.insertOjSubmitLog(log);
-        return AjaxResult.success(log);
+        return AjaxResult.success(logReturnVo);
     }
 
     @Override

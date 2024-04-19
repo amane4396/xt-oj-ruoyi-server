@@ -1,8 +1,11 @@
 package com.ruoyi.web.controller.oj;
 
 import java.util.List;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.vo.AddHomeworkDto;
+import org.apache.poi.xddf.usermodel.text.TabAlignment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +36,12 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class OjHomeworkController extends BaseController {
     @Autowired
     private IOjHomeworkService ojHomeworkService;
+
+//    @PostMapping("/add")
+//    public AjaxResult addHomework(@RequestBody AddHomeworkDto dto){
+//        ojHomeworkService.addHomework(dto);
+//        return AjaxResult.success("作业添加成功");
+//    }
 
     /**
      * 查询作业管理列表

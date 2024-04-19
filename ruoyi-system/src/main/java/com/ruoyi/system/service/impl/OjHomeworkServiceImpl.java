@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.vo.AddHomeworkDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.OjHomeworkMapper;
 import com.ruoyi.system.domain.OjHomework;
 import com.ruoyi.system.service.IOjHomeworkService;
+
+import javax.annotation.Resource;
 
 /**
  * 作业管理Service业务层处理
@@ -19,8 +23,9 @@ import com.ruoyi.system.service.IOjHomeworkService;
  */
 @Service
 public class OjHomeworkServiceImpl extends ServiceImpl<OjHomeworkMapper, OjHomework> implements IOjHomeworkService {
-    @Autowired
+    @Resource
     private OjHomeworkMapper ojHomeworkMapper;
+
 
     /**
      * 查询作业管理
@@ -53,6 +58,8 @@ public class OjHomeworkServiceImpl extends ServiceImpl<OjHomeworkMapper, OjHomew
     @Override
     public int insertOjHomework(OjHomework ojHomework) {
         ojHomework.setCreateTime(DateUtils.getNowDate());
+        ojHomework.setStatus(0L);
+        ojHomework.setCreateBy(SecurityUtils.getUsername());
         return ojHomeworkMapper.insertOjHomework(ojHomework);
     }
 
@@ -89,4 +96,5 @@ public class OjHomeworkServiceImpl extends ServiceImpl<OjHomeworkMapper, OjHomew
     public int deleteOjHomeworkByHomeworkId(Long homeworkId) {
         return ojHomeworkMapper.deleteOjHomeworkByHomeworkId(homeworkId);
     }
+
 }

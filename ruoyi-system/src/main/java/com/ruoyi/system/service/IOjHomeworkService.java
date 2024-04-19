@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.system.domain.OjHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.system.domain.vo.AddHomeworkDto;
 
 /**
  * 作业管理Service接口
@@ -58,4 +59,5 @@ public interface IOjHomeworkService extends IService<OjHomework> {
      * @return 结果
      */
     public int deleteOjHomeworkByHomeworkId(Long homeworkId);
+
 }
