@@ -82,6 +82,22 @@ public class OjHomeworkController extends BaseController {
         return AjaxResult.success(list);
     }
 
+    @GetMapping("/getById/{homeworkId}")
+    public AjaxResult getById(@PathVariable Long homeworkId) {
+        OjHomework homework = ojHomeworkService.getById(homeworkId);
+        List<OjQuestion> questionList = new ArrayList<>();
+
+        if (!homework.getQuestionIds().isEmpty()) {
+            String[] questionIdList = homework.getQuestionIds().split(",");
+            for (String questionId : questionIdList) {
+                OjQuestion question = ojQuestionService.selectOjQuestionByQuestionId(Long.valueOf(questionId));
+                questionList.add(question);
+            }
+        }
+        homework.setQuestionList(questionList);
+        return AjaxResult.success(homework);
+    }
+
 
     /**
      * 导出作业管理列表

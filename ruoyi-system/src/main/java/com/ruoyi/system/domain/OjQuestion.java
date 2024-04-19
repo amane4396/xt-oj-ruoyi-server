@@ -35,6 +35,7 @@ public class OjQuestion extends BaseEntity {
      * 题目名称
      */
     @Excel(name = "题目名称")
+    @TableField("name")
     private String name;
 
     /**

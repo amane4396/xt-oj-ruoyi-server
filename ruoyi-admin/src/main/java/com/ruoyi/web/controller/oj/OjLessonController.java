@@ -10,9 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.system.service.IOjClassLessonService;
-import com.ruoyi.system.service.IOjClassTeacherService;
-import com.ruoyi.system.service.IOjTeacherService;
+import com.ruoyi.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +24,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.service.IOjLessonService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -53,6 +50,12 @@ public class OjLessonController extends BaseController {
     @Autowired
     private IOjTeacherService teacherService;
 
+    @Autowired
+    private IOjStudentService studentService;
+
+    @Autowired
+    private IOjClassStudentService classStudentService;
+
 
     /**
      * 查询课程管理列表
@@ -77,6 +80,20 @@ public class OjLessonController extends BaseController {
         List<Long> lessonIds = new ArrayList<>();
         for (OjClassTeacher ojClassTeacher : ojClassTeacherList) {
             classLessonService.list(new LambdaQueryWrapper<OjClassLesson>().eq(OjClassLesson::getClassId, ojClassTeacher.getOjClassId())).forEach(
+                    ojClassLesson -> lessonIds.add(ojClassLesson.getLessonId())
+            );
+        }
+        return CollectionUtil.distinct(ojLessonService.listByIds(lessonIds));
+    }
+
+    @GetMapping("/getLessonByStudentId")
+    public List<OjLesson> getLessonByStudentId() {
+        Long userId = SecurityUtils.getUserId();
+        OjStudent student = studentService.getOne(new LambdaQueryWrapper<OjStudent>().eq(OjStudent::getUserId, userId));
+        List<OjClassStudent> ojClassStudentList = classStudentService.list(new LambdaQueryWrapper<OjClassStudent>().eq(OjClassStudent::getOjStudentId, student.getStudentId()));
+        List<Long> lessonIds = new ArrayList<>();
+        for (OjClassStudent ojClassStudent : ojClassStudentList) {
+            classLessonService.list(new LambdaQueryWrapper<OjClassLesson>().eq(OjClassLesson::getClassId, ojClassStudent.getOjClassId())).forEach(
                     ojClassLesson -> lessonIds.add(ojClassLesson.getLessonId())
             );
         }
