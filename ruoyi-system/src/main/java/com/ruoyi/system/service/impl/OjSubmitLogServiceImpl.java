@@ -1,10 +1,13 @@
 package com.ruoyi.system.service.impl;
 
+import ch.qos.logback.core.util.TimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import com.ruoyi.common.core.Question;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -13,9 +16,11 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.Task;
 import com.ruoyi.system.domain.OjCase;
+import com.ruoyi.system.domain.OjStudent;
 import com.ruoyi.system.domain.vo.LogReturnVo;
 import com.ruoyi.system.mapper.OjCaseMapper;
 import com.ruoyi.system.service.IOjCaseService;
+import com.ruoyi.system.service.IOjStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.OjSubmitLogMapper;
@@ -40,6 +45,9 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
 
     @Resource
     private IOjCaseService iOjCaseService;
+
+    @Resource
+    private IOjStudentService studentService;
 
     /**
      * 查询提交样例记录
@@ -110,8 +118,12 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
     }
 
     @Override
-    public AjaxResult submit(OjSubmitLog log) throws Exception{
-
+    public AjaxResult submit(OjSubmitLog log) throws Exception {
+        Long userId = SecurityUtils.getUserId();
+        OjStudent student = studentService.getOne(new LambdaQueryWrapper<OjStudent>().eq(OjStudent::getUserId, userId));
+        if (!Objects.isNull(student)) {
+            log.setStudentId(student.getStudentId());
+        }
         Question question = new Question();
         question.setCode(log.getCode());
         question.setStdin("");
@@ -127,10 +139,10 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
             task.compile(question);
         } catch (Exception e) {
             log.setRemark(e.getMessage());
-            logReturnVo.setRemark("编译失败：\n" + e.getMessage());
+            logReturnVo.setRemark("编译失败;" + e.getMessage());
             logReturnVo.setRunTime("");
             logReturnVo.setRunCondition("0/" + count);
-            log.setStatus("2");
+            log.setStatus("0");
             log.setPassNum(0L);
             ojSubmitLogMapper.insert(log);
             return AjaxResult.success(logReturnVo);
@@ -141,31 +153,31 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
         Method solution = cls.getMethod("solution", String.class);
 
         int passed = 0;
-        long begin = System.currentTimeMillis();
+        long begin = System.nanoTime();
         solution.setAccessible(true);
-        for(OjCase example : examples){
-            String str =  solution.invoke(cls, example.getInput()).toString();
-            if(str.equals(example.getResult())){
+        for (OjCase example : examples) {
+            String str = solution.invoke(cls, example.getInput()).toString();
+            if (str.equals(example.getResult())) {
                 passed++;
-            }else{
+            } else {
                 log.setRemark(example.getInput());
             }
         }
-        long end = System.currentTimeMillis();
-        if(passed == count){
+        long end = System.nanoTime();
+
+        if (passed == count) {
             log.setStatus("1");
             log.setRemark("通过");
             log.setRemark("ACCEPT");
-            log.setPassNum((long)passed);
+            log.setPassNum((long) passed);
             log.setRunTime((end - begin) + "ms");
             log.setStudentId(SecurityUtils.getUserId());
-            logReturnVo.setRunCondition(count + "/" + count + "ms");
+            logReturnVo.setRunCondition(count + "/" + count);
             logReturnVo.setRemark("通过");
-            logReturnVo.setRunTime(String.valueOf(passed));
-        }else{
-            log.setCode("2");
-            log.setRemark("FAILED");
-            log.setPassNum((long)passed);
+            logReturnVo.setRunTime(passed + "ms");
+        } else {
+            log.setStatus("2");
+            log.setPassNum((long) passed);
             log.setRunTime((end - begin) + "ms");
             log.setStudentId(SecurityUtils.getUserId());
             log.setRemark("样例未全部通过");

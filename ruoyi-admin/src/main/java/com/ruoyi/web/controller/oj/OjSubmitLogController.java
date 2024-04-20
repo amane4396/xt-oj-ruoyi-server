@@ -1,14 +1,20 @@
 package com.ruoyi.web.controller.oj;
 
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.core.util.StringCollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.OjStudent;
 import com.ruoyi.system.domain.dto.RunCodeDto;
+import com.ruoyi.system.service.IOjQuestionService;
+import com.ruoyi.system.service.IOjStudentService;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +49,12 @@ public class OjSubmitLogController extends BaseController {
     private IOjSubmitLogService ojSubmitLogService;
 
     @Resource
+    private IOjQuestionService questionService;
+
+    @Resource
+    private IOjStudentService studentService;
+
+    @Resource
     private ObjectMapper objectMapper;
 
     @Resource
@@ -51,10 +63,11 @@ public class OjSubmitLogController extends BaseController {
 
     @PostMapping("/runCode")
     @ApiOperation("测试代码")
-    public AjaxResult runCode(@RequestBody String requestBody) throws Exception{
+    public AjaxResult runCode(@RequestBody String requestBody) throws Exception {
         RunCodeDto dto = objectMapper.readValue(requestBody, RunCodeDto.class);
         return iOjSubmitLogService.runCode(dto.getCode());
     }
+
     /**
      * 提交代码
      *
@@ -64,9 +77,20 @@ public class OjSubmitLogController extends BaseController {
      */
     @PostMapping("/submit")
     @ApiOperation("测试提交")
-    public AjaxResult test(@RequestBody OjSubmitLog log) throws Exception{
+    public AjaxResult test(@RequestBody OjSubmitLog log) throws Exception {
 //        OjSubmitLog log = objectMapper.readValue(requestBody, OjSubmitLog.class);
         return iOjSubmitLogService.submit(log);
+    }
+
+    @GetMapping("/listByQuestionId/{questionId}")
+    public AjaxResult listByQuestionId(@PathVariable Long questionId) {
+        OjStudent student = studentService.getOne(new LambdaQueryWrapper<OjStudent>().eq(OjStudent::getUserId, SecurityUtils.getUserId()));
+        Long studentId = null;
+        if (!Objects.isNull(student)) {
+            studentId = student.getStudentId();
+        }
+        List<OjSubmitLog> list = ojSubmitLogService.list(new LambdaQueryWrapper<OjSubmitLog>().eq(OjSubmitLog::getQuestionId, questionId).eq(OjSubmitLog::getStudentId, studentId));
+        return AjaxResult.success(list);
     }
 
     /**
