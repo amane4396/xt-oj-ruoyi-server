@@ -22,6 +22,7 @@ import com.ruoyi.system.domain.vo.LogReturnVo;
 import com.ruoyi.system.mapper.OjCaseMapper;
 import com.ruoyi.system.service.IOjCaseService;
 import com.ruoyi.system.service.IOjStudentService;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.OjSubmitLogMapper;
@@ -151,8 +152,20 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
         }
         // 加载类获取方法反射
         Class<?> cls = customClassLoader.loadClassFromFile("./tmp/Solution.class");
+        Method solution = null;
+        try{
+            solution = cls.getMethod("solution", String.class);
+        }catch (Exception e){
+            log.setRemark(e.getMessage());
+            logReturnVo.setRemark("缺少方法solution");
+            logReturnVo.setRunTime("");
+            logReturnVo.setRunCondition("0/" + count);
+            log.setStatus("0");
+            log.setPassNum(0L);
+            ojSubmitLogMapper.insert(log);
+            return AjaxResult.error(logReturnVo.getRemark());
+        }
 
-        Method solution = cls.getMethod("solution", String.class);
 
         int passed = 0;
         long begin = System.nanoTime();

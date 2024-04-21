@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.oj;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Resource;
@@ -14,6 +16,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.OjStudent;
 import com.ruoyi.system.domain.dto.RunCodeDto;
+import com.ruoyi.system.service.IOjHomeworkService;
 import com.ruoyi.system.service.IOjQuestionService;
 import com.ruoyi.system.service.IOjStudentService;
 import io.swagger.annotations.ApiOperation;
@@ -61,6 +64,8 @@ public class OjSubmitLogController extends BaseController {
     @Resource
     private IOjSubmitLogService iOjSubmitLogService;
 
+    @Resource
+    private IOjHomeworkService iOjHomeworkService;
 
     @PostMapping("/runCode")
     @ApiOperation("测试代码")
@@ -101,25 +106,29 @@ public class OjSubmitLogController extends BaseController {
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody OjSubmitLog ojSubmitLog) {
         startPage();
-        QueryWrapper<OjSubmitLog> wrapper = new QueryWrapper<>();
-        if (ojSubmitLog.getQuestionId() != null) {
-            wrapper.eq("question_id", ojSubmitLog.getQuestionId());
+        String[] ids = iOjHomeworkService.getById(ojSubmitLog.getHomeworkId()).getQuestionIds().split(",");
+        List<OjSubmitLog> res = new ArrayList<>();
+        for(String s : ids){
+            List<OjSubmitLog> log = ojSubmitLogService.list(new LambdaQueryWrapper<OjSubmitLog>()
+                    .eq(OjSubmitLog::getQuestionId, Long.valueOf(s))
+                    .eq(OjSubmitLog::getStudentId, ojSubmitLog.getStudentId())
+                    .eq(OjSubmitLog::getHomeworkId, ojSubmitLog.getHomeworkId())
+                    );
+            log.sort(Comparator.comparing(OjSubmitLog::getCreateTime));
+            if(log.size() != 0){
+                res.add(log.get(0));
+            }
         }
-        if (ojSubmitLog.getStudentId() != null) {
-            wrapper.eq("student_id", ojSubmitLog.getStudentId());
+        if(ojSubmitLog.getQuestionId() != null){
+            res.removeIf(a -> !a.getQuestionId().equals(ojSubmitLog.getQuestionId()));
         }
-        if (ojSubmitLog.getHomeworkId() != null) {
-            wrapper.eq("homework_id", ojSubmitLog.getHomeworkId());
-        }
-        wrapper.eq("corrected", 0);
-        List<OjSubmitLog> list = ojSubmitLogService.list(wrapper);
-        for (OjSubmitLog submitLog : list) {
+        for (OjSubmitLog submitLog : res) {
             if (!Objects.isNull(submitLog.getStudentId())) {
                 OjStudent student = studentService.getById(submitLog.getStudentId());
                 submitLog.setStudent(student);
             }
         }
-        return getDataTable(list);
+        return getDataTable(res);
     }
 
     @PostMapping("/listForStu")
