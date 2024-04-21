@@ -8,8 +8,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="submitLogId"    column="submit_log_id"    />
         <result property="studentId"    column="student_id"    />
         <result property="questionId"    column="question_id"    />
+        <result property="homeworkId"    column="homework_id"    />
         <result property="passNum"    column="pass_num"    />
         <result property="status"    column="status"    />
+        <result property="corrected"    column="corrected"    />
         <result property="code"    column="code"    />
         <result property="remark"    column="remark"    />
         <result property="runTime"    column="run_time"    />
@@ -21,7 +23,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectOjSubmitLogVo">
-        select submit_log_id, student_id, question_id, pass_num, status, code, remark, run_time, del_flag, create_by, create_time, update_by, update_time from oj_submit_log
+        select submit_log_id,
+               student_id,
+               question_id,
+               homework_id,
+               pass_num,
+               status,
+               corrected,
+               code,
+               remark,
+               run_time,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from oj_submit_log
     </sql>
 
     <select id="selectOjSubmitLogList" parameterType="OjSubmitLog" resultMap="OjSubmitLogResult">
@@ -42,8 +59,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="studentId != null">student_id,</if>
             <if test="questionId != null">question_id,</if>
+            <if test="homeworkId, != null">homework_id,</if>
             <if test="passNum != null">pass_num,</if>
             <if test="status != null">status,</if>
+            <if test="corrected != null">corrected,</if>
             <if test="code != null">code,</if>
             <if test="remark != null">remark,</if>
             <if test="runTime != null">run_time,</if>
@@ -56,8 +75,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="studentId != null">#{studentId},</if>
             <if test="questionId != null">#{questionId},</if>
+            <if test="homeworkId, != null">#{homeworkId},</if>
             <if test="passNum != null">#{passNum},</if>
             <if test="status != null">#{status},</if>
+            <if test="corrected != null">#{corrected},</if>
             <if test="code != null">#{code},</if>
             <if test="remark != null">#{remark},</if>
             <if test="runTime != null">#{runTime},</if>
@@ -74,8 +95,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="studentId != null">student_id = #{studentId},</if>
             <if test="questionId != null">question_id = #{questionId},</if>
+            <if test="homeworkId != null">question_id = #{homeworkId},</if>
             <if test="passNum != null">pass_num = #{passNum},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="corrected != null">status = #{corrected},</if>
             <if test="code != null">code = #{code},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="runTime != null">run_time = #{runTime},</if>

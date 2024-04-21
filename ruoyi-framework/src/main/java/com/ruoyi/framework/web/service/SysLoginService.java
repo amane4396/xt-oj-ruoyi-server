@@ -47,14 +47,6 @@ import com.ruoyi.system.service.ISysUserService;
 @Component
 public class SysLoginService {
 
-    //微信小程序appId
-    @Value("${wx.minApp.appId}")
-    private String appId;
-
-    //微信小程序密钥
-    @Value("${wx.minApp.appSecret}")
-    private String appSecret;
-
     @Autowired
     private TokenService tokenService;
 

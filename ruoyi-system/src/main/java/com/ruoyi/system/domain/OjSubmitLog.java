@@ -1,6 +1,7 @@
 package com.ruoyi.system.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.annotation.Excel;
@@ -34,6 +35,30 @@ public class OjSubmitLog extends BaseEntity {
      */
     private Long questionId;
 
+    public OjStudent getStudent() {
+        return student;
+    }
+
+    public void setStudent(OjStudent student) {
+        this.student = student;
+    }
+
+    @TableField(exist = false)
+    private OjStudent student;
+
+    public Long getHomeworkId() {
+        return homeworkId;
+    }
+
+    public void setHomeworkId(Long homeworkId) {
+        this.homeworkId = homeworkId;
+    }
+
+    /**
+     * 作业id
+     */
+    private Long homeworkId;
+
     /**
      * 通过样例的数量
      */
@@ -45,6 +70,19 @@ public class OjSubmitLog extends BaseEntity {
      */
     @Excel(name = "状态(accept, failed, overtime)")
     private String status;
+
+    public Integer getCorrected() {
+        return corrected;
+    }
+
+    public void setCorrected(Integer corrected) {
+        this.corrected = corrected;
+    }
+
+    /**
+     * 批改状态
+     */
+    private Integer corrected;
 
     /**
      * 提交内容
@@ -133,8 +171,10 @@ public class OjSubmitLog extends BaseEntity {
                 .append("submitLogId", getSubmitLogId())
                 .append("studentId", getStudentId())
                 .append("questionId", getQuestionId())
+                .append("homeworkId", getHomeworkId())
                 .append("passNum", getPassNum())
                 .append("status", getStatus())
+                .append("corrected", getCorrected())
                 .append("code", getCode())
                 .append("remark", getRemark())
                 .append("runTime", getRunTime())

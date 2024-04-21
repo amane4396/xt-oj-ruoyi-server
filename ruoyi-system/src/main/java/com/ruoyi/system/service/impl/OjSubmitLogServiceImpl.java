@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -120,6 +121,7 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
     @Override
     public AjaxResult submit(OjSubmitLog log) throws Exception {
         Long userId = SecurityUtils.getUserId();
+        log.setCreateTime(DateUtils.getNowDate());
         OjStudent student = studentService.getOne(new LambdaQueryWrapper<OjStudent>().eq(OjStudent::getUserId, userId));
         if (!Objects.isNull(student)) {
             log.setStudentId(student.getStudentId());
@@ -171,7 +173,6 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
             log.setRemark("ACCEPT");
             log.setPassNum((long) passed);
             log.setRunTime((end - begin) + "ms");
-            log.setStudentId(SecurityUtils.getUserId());
             logReturnVo.setRunCondition(count + "/" + count);
             logReturnVo.setRemark("通过");
             logReturnVo.setRunTime(passed + "ms");
@@ -179,7 +180,6 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
             log.setStatus("2");
             log.setPassNum((long) passed);
             log.setRunTime((end - begin) + "ms");
-            log.setStudentId(SecurityUtils.getUserId());
             log.setRemark("样例未全部通过");
             logReturnVo.setRunCondition(passed + "/" + count + "ms");
             logReturnVo.setRemark("样例未全部通过");
@@ -187,7 +187,7 @@ public class OjSubmitLogServiceImpl extends ServiceImpl<OjSubmitLogMapper, OjSub
         }
 
         log.setRunTime(String.valueOf(end - begin));
-        iOjSubmitLogService.insertOjSubmitLog(log);
+        iOjSubmitLogService.save(log);
         return AjaxResult.success(logReturnVo);
     }
 

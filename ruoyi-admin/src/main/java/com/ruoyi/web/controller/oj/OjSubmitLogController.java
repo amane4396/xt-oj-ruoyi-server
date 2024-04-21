@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.core.util.StringCollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -96,12 +97,49 @@ public class OjSubmitLogController extends BaseController {
     /**
      * 查询提交样例记录列表
      */
-    @PreAuthorize("@ss.hasPermi('system:submitLog:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(OjSubmitLog ojSubmitLog) {
+//    @PreAuthorize("@ss.hasPermi('system:submitLog:list')")
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody OjSubmitLog ojSubmitLog) {
         startPage();
-        List<OjSubmitLog> list = ojSubmitLogService.selectOjSubmitLogList(ojSubmitLog);
+        QueryWrapper<OjSubmitLog> wrapper = new QueryWrapper<>();
+        if (ojSubmitLog.getQuestionId() != null) {
+            wrapper.eq("question_id", ojSubmitLog.getQuestionId());
+        }
+        if (ojSubmitLog.getStudentId() != null) {
+            wrapper.eq("student_id", ojSubmitLog.getStudentId());
+        }
+        if (ojSubmitLog.getHomeworkId() != null) {
+            wrapper.eq("homework_id", ojSubmitLog.getHomeworkId());
+        }
+        wrapper.eq("corrected", 0);
+        List<OjSubmitLog> list = ojSubmitLogService.list(wrapper);
+        for (OjSubmitLog submitLog : list) {
+            if (!Objects.isNull(submitLog.getStudentId())) {
+                OjStudent student = studentService.getById(submitLog.getStudentId());
+                submitLog.setStudent(student);
+            }
+        }
         return getDataTable(list);
+    }
+
+    @PostMapping("/listForStu")
+    public AjaxResult listForStu(@RequestBody OjSubmitLog ojSubmitLog) {
+        Long userId = SecurityUtils.getUserId();
+        OjStudent studentDB = studentService.getOne(new LambdaQueryWrapper<OjStudent>().eq(OjStudent::getUserId, userId));
+        Long studentId = null;
+        if (!Objects.isNull(studentDB)) {
+            studentId = studentDB.getStudentId();
+        }
+        QueryWrapper<OjSubmitLog> wrapper = new QueryWrapper<>();
+        if (ojSubmitLog.getQuestionId() != null) {
+            wrapper.eq("question_id", ojSubmitLog.getQuestionId());
+        }
+        wrapper.eq("student_id", studentId);
+        if (ojSubmitLog.getHomeworkId() != null) {
+            wrapper.eq("homework_id", ojSubmitLog.getHomeworkId());
+        }
+        List<OjSubmitLog> list = ojSubmitLogService.list(wrapper);
+        return success(list);
     }
 
     /**
